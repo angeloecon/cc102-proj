@@ -111,6 +111,13 @@ void Bank::createAcc(){
   getline(cin, account.name);
   cout << myDesign.whiteText();
   account.id = randNum();
+  for (const auto &acc : accounts){
+    if(acc.id == account.id){
+      account.id = randNum();
+    } else {
+      break;
+    }
+  }
   cout << "Your Account Number is: "<< account.id << endl;
   while (true) {
     cout << "Enter your 4-digit number: ";
@@ -124,12 +131,7 @@ void Bank::createAcc(){
   }
   account.balance = checkNum("Enter Initial Balance: ₱");
   cout << myDesign.resetColor();
-  for (const auto &acc : accounts){
-    if(acc.id == account.id){
-      cout << "You preferred ID already exists. Please try another! \n";
-      return;
-    }
-  }
+ 
   accounts.push_back(account);
   cout << myDesign.greenText() << "* Account Created!! * \n Please Wait......" << myDesign.resetColor() <<endl;
   this_thread::sleep_for(chrono::milliseconds(2000));
@@ -149,12 +151,11 @@ void Bank::login(){
   loginAccountIndex = findAccount(idNum, pin);
   if(loginAccountIndex != -1){
     myDesign.printStylish("Logging In........");
-    this_thread::sleep_for(chrono::milliseconds(2000)); // Pause for 2000ms
-    system("clear");
+    this_thread::sleep_for(chrono::milliseconds(2000)); 
     loginMenu();
   } else {
     cout << myDesign.redText() <<" |X|Invalid ID or PIN |X|" << myDesign.resetColor() << endl;
-    this_thread::sleep_for(chrono::milliseconds(2000)); // Pause for 2000ms
+    this_thread::sleep_for(chrono::milliseconds(2000));
     system("clear");
   }
 }
@@ -255,7 +256,8 @@ void Bank::moneyTransfer(){
   recipientID = checkNum("Enter Recipient's Account ID: ");
   int recipientAcc = findAccount(recipientID);
   if(recipientAcc == -1){
-    cout << "Recipient Account Not Found." << endl;
+    cout << myDesign.redText() << "Recipient Account Not Found." << myDesign.resetColor() <<  endl;
+    this_thread::sleep_for(chrono::milliseconds(2000));
     return;
   }
   amount = checkNum("Enter Amount To Transfer: ");
@@ -313,6 +315,7 @@ int main(){
   int first_choice;
   while (true) {
       system("clear");
+      while (true) {
       myDesign.coloredDesign();
       myDesign.font();
       myDesign.coloredDesign();
@@ -320,18 +323,19 @@ int main(){
       myDesign.choiceTemp("1", "Login");
       myDesign.choiceTemp("2", "Create Account");
       myDesign.choiceTemp("3", "Exit");
-      while (true) {
-        cout << myDesign.whiteText() << "Choose an option: " << myDesign.resetColor();
-        cin >> first_choice;
-        if (cin.fail()) {
-          cin.clear();
-          cin.ignore(numeric_limits<streamsize>::max(), '\n');
-          cout << myDesign.redText() << "|X| Invalid Input |X|" << myDesign.resetColor() << endl;
-        }
-        else {
-          break;
-        }
+      cout << myDesign.whiteText() << "Choose an option: " << myDesign.resetColor();
+      cin >> first_choice;
+      if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << myDesign.redText() << "|X| Invalid Input |X|" << myDesign.resetColor() << endl;
+        this_thread::sleep_for(chrono::milliseconds(1000));
+        system("clear");
       }
+      else {
+        break;
+      }
+    }
     switch (first_choice) {
     case 1: 
       cout << endl;
